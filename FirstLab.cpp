@@ -92,9 +92,7 @@ std::vector<std::array<float, 4>> readMultipleGenmoe(const std::string &path)
         }
         else
         {
-
             processed.reserve(processed.size() + line.size());
-
             std::copy(line.begin(), line.end(), std::back_inserter(processed));
         }
     }
