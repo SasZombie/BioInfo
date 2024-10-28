@@ -49,7 +49,7 @@ def main()->None:
 
     plot_lines_evolution(dict_list);
    
-    plot_points(dict_list);
+    # plot_points(dict_list);
 
 
 if __name__ == "__main__":
