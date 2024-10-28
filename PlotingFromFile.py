@@ -71,7 +71,7 @@ def main()->None:
     dict_list = read_file()
     for i, d in enumerate(dict_list):
         max_pair = max(d.items(), key=lambda item: item[1])
-        print(f"Dictionary {i + 1}: Highest protein percent is {max_pair}")
+        print(f"Genome {i + 1}: Highest protein percent is {max_pair}")
 
     plot_lines_with_peaks(dict_list);
    

@@ -13,6 +13,9 @@
 // Detect the peaks for each combination over the main sequence
 // 2 Results are needed in this: case one "A number that a (The marker can be geometrical shape)";
 // case 2: A sequence in the console that shows the combination and the position of the peak inside the sequence
+static std::vector<std::string> createAllCombinations();
+static void calculatePercentage(const std::vector<std::string> &combinations, const std::string &file);
+
 std::vector<std::string> createAllCombinations()
 {
     std::vector<std::string> allCombinations;
