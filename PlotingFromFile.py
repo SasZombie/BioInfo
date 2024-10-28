@@ -47,7 +47,7 @@ def plot_lines_with_peaks(dict_list: dict)->None:
 
     plt.xlabel('Category')
     plt.ylabel('Value')
-    plt.title('Plot of Values with Peaks Marked on Top')
+    plt.title('Plot of Values with Peaks')
     plt.grid(True)
     plt.legend()
     plt.show()
@@ -71,7 +71,7 @@ def main()->None:
     dict_list = read_file()
     for i, d in enumerate(dict_list):
         max_pair = max(d.items(), key=lambda item: item[1])
-        print(f"Dictionary {i + 1}: Highest pair is {max_pair}")
+        print(f"Dictionary {i + 1}: Highest protein percent is {max_pair}")
 
     plot_lines_with_peaks(dict_list);
    

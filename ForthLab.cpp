@@ -129,6 +129,7 @@ void calculatePercentage(const std::vector<std::string> &combinations, const std
     }
 
     out.close();
+    system("python3 PlotingFromFile.py");
 }
 
 
