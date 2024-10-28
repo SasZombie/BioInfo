@@ -28,6 +28,29 @@ def plot_lines_evolution(dict_list: dict)->None:
     plt.grid(True)
     plt.show()
 
+def plot_lines_with_peaks(dict_list: dict)->None:
+    plt.figure(figsize=(8, 6))
+
+    for i, d in enumerate(dict_list):
+        keys = list(d.keys())
+        values = list(d.values())
+        plt.plot(keys, values, marker='o', linestyle='-', label=f'Line {i + 1}')
+
+    for i, d in enumerate(dict_list):
+        keys = list(d.keys())
+        values = list(d.values())
+        
+        max_value = max(values)
+        max_key = keys[values.index(max_value)]
+        
+        plt.plot(max_key, max_value, marker='*', color='red', markersize=12, label=f'Peak {i + 1}')
+
+    plt.xlabel('Category')
+    plt.ylabel('Value')
+    plt.title('Plot of Values with Peaks Marked on Top')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
 
 def plot_points(dict_list: dict)->None:
     
@@ -46,8 +69,11 @@ def plot_points(dict_list: dict)->None:
 def main()->None:
     
     dict_list = read_file()
+    for i, d in enumerate(dict_list):
+        max_pair = max(d.items(), key=lambda item: item[1])
+        print(f"Dictionary {i + 1}: Highest pair is {max_pair}")
 
-    plot_lines_evolution(dict_list);
+    plot_lines_with_peaks(dict_list);
    
     # plot_points(dict_list);
 

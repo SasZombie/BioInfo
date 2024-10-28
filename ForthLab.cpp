@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <fstream>
 
 // Design a brute force algorithm that generates all the combinations of 2 and 3 letters based on an alphabet of the sequence of 4 letters
@@ -52,8 +53,11 @@ void calculatePercentage(const std::vector<std::string> &combinations, const std
     char last = '\0', secondLast = '\0';
     std::vector<std::unordered_map<std::string, float>> maps;
     size_t totalSize = 0;
+    size_t genomeCount = 0;
+    constexpr size_t maxGenomes = 10;
 
-    while (std::getline(input, line))
+    std::getline(input, line);
+    while (std::getline(input, line) && genomeCount < maxGenomes)
     {
         if (line[0] == '>')
         {
@@ -75,10 +79,12 @@ void calculatePercentage(const std::vector<std::string> &combinations, const std
             }
 
             std::cout << "Completed One Genome\n";
+            ++genomeCount;
             continue;
+
         }
 
-        if (!firstLine && line.size() > 2)
+        [[unlikely]] if (!firstLine && line.size() > 2)
         {
             ++map[std::string{last, line[0], line[1]}];
             ++map[std::string{secondLast, last, line[0]}];
@@ -112,9 +118,9 @@ void calculatePercentage(const std::vector<std::string> &combinations, const std
 
     std::ofstream out("out.csv");
 
-    for(const auto& map :  maps)
+    for(const auto& mapIter :  maps)
     {
-        for(const auto& pair : map)
+        for(const auto& pair : mapIter)
         {
             out << pair.first << ',' << pair.second << ','; 
         }
