@@ -12,26 +12,27 @@ The length of these repetitions should be of at least 20 repetitions in sequence
 (example: ATGATGATG ... ATG)
 */
 
-void processChunk(const std::string &chunk, std::unordered_map<std::string, int> &patternCount, int minLength, int maxLength);
+void processChunk(const std::string &chunk, std::unordered_map<std::string, size_t> &patternCount, size_t minLength, size_t maxLength);
 
-void processChunk(const std::string &chunk, std::unordered_map<std::string, int> &patternCount, int minLength, int maxLength)
+void processChunk(const std::string &chunk, std::unordered_map<std::string, size_t> &patternCount, size_t minLength, size_t maxLength)
 {
-    int n = chunk.size();
-    for (int len = minLength; len <= maxLength; ++len)
+    size_t n = chunk.size();
+
+    for (size_t len = minLength; len <= maxLength; ++len)
     {
-        for (int i = 0; i <= n - len; ++i)
+        if(n < len)
+            return;
+        for (size_t i = 0; i <= n - len; ++i)
         {
-            std::string subPattern = chunk.substr(i, len);
-            
-            subPattern.erase(std::remove(subPattern.begin(), subPattern.end(), '\n'), subPattern.end());
-            
-            if (subPattern.length() == len) {
-                patternCount[subPattern]++;
+            const std::string subPattern = chunk.substr(i, len);
+
+            if (subPattern.length() == len)
+            {
+                ++patternCount[subPattern];
             }
         }
     }
 }
-
 
 int main()
 {
@@ -45,7 +46,7 @@ int main()
         return 1;
     }
 
-    std::unordered_map<std::string, int> patternCount;
+    std::unordered_map<std::string, size_t> patternCount;
     const size_t bufferSize = 1024;
     std::string buffer;
     buffer.reserve(bufferSize + maxLength - 1);
@@ -60,26 +61,25 @@ int main()
         if (buffer.size() < minLength)
             break;
 
+        buffer.erase(std::remove_if(buffer.begin(), buffer.end(), [](unsigned char c)
+                                    { return c == '\n' || c == '\r'; }),
+                     buffer.end());
+
         processChunk(buffer, patternCount, minLength, maxLength);
 
         buffer = buffer.substr(buffer.size() - (maxLength - 1));
     }
 
     std::ofstream out("out.csv");
-    
-    bool found = false;
+
     for (const auto &pair : patternCount)
     {
         if (pair.second > 1)
         {
-            found = true;
-            out << pair.first << ", " << pair.second << "\n";
+            out << pair.first << ", " << pair.second << '\n';
         }
     }
+    out.close();
 
-    if (!found)
-    {
-        std::cout << "No repeated patterns of specified lengths found.\n";
-    }
-
+    system("python3 PlotingFromFile.py");
 }

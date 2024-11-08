@@ -103,8 +103,8 @@ def plot_bar()->None:
 def relative_bar_chart()->None:
 
     with open('chromosome14', 'r') as file:
-        chromosome_data = file.read().replace('\n', '') 
-    chromosome_length = len(chromosome_data)  
+        chromosome_data = file.read().replace('\n', '')
+    chromosome_length = len(chromosome_data)
 
     number = 0
     pattern_counts = {}
@@ -112,10 +112,10 @@ def relative_bar_chart()->None:
         reader = csv.reader(file)
         for row in reader:
             pattern = row[0].strip()
-            print(number)
-            number +=1 
             count = int(row[1].strip())
-            pattern_counts[pattern] = count
+            if count >= 20:
+                number += 1
+                pattern_counts[pattern] = count
 
     sorted_patterns = sorted(pattern_counts.items(), key=lambda x: x[1], reverse=True)
 
@@ -127,31 +127,36 @@ def relative_bar_chart()->None:
             pos = chromosome_data.find(pattern, start)
             if pos == -1:
                 break
-            positions.append(pos)
-            start = pos + 1 
+            end_pos = pos + len(pattern)  
+            positions.append((pos, end_pos))  
+            start = pos + 1
         pattern_positions[pattern] = positions
 
     plt.figure(figsize=(12, 8))
 
     y_labels = [pattern for pattern, _ in sorted_patterns]
-    y_positions = range(len(y_labels))  
+    y_positions = range(len(y_labels))
 
     for i, pattern in enumerate(y_labels):
         positions = pattern_positions[pattern]
+        
         plt.hlines(y=i, xmin=0, xmax=chromosome_length, color='lightgrey', linewidth=2)
-        plt.plot(positions, [i] * len(positions), 'x', color='blue')  
+        
+        start_positions = [pos[0] for pos in positions]
+        end_positions = [pos[1] for pos in positions]
+        
+        plt.plot(start_positions, [i] * len(start_positions), 'x', color='blue', label='Start' if i == 0 else "") 
+        plt.plot(end_positions, [i] * len(end_positions), 'o', color='red', label='End' if i == 0 else "") 
 
-    plt.yticks(y_positions, y_labels)  # 
+    plt.yticks(y_positions, y_labels)
     plt.xlabel('Position on Chromosome 14 (number of characters)')
     plt.ylabel('Patterns')
     plt.title('Pattern Occurrences on Chromosome 14')
-    plt.xlim(0, chromosome_length)  
+    plt.xlim(0, chromosome_length)
     plt.gca().invert_yaxis()
+    plt.legend()
     plt.tight_layout()
     plt.show()
-
-
-
 
 def main()->None:
     relative_bar_chart()
