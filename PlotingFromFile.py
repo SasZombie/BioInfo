@@ -159,33 +159,26 @@ def relative_bar_chart()->None:
     plt.show()
 
 def read_gel()->None:
-   # Read sequences from the CSV file
     with open("out", "r") as file:
         reader = csv.reader(file)
-        sequences = next(reader)  # Read the first row of the CSV file
+        sequences = next(reader)
 
-    # Sort sequences by length to give an impression similar to the gel where longer lanes are lower
     sequences = sorted(sequences, key=len, reverse=True)
 
-    # Plot setup
     fig, ax = plt.subplots(figsize=(len(sequences), 8))
     ax.set_xlim(-1, len(sequences))
     ax.set_ylim(0, max(len(seq) for seq in sequences))
 
-    # Plot each sequence as a vertical "lane" with bands
     for i, seq in enumerate(sequences):
-        for j, char in enumerate(seq):
-            # Plot each character as a "band" in the lane
-            ax.plot(i, j, 's', color='black', markersize=8)  # 's' is a square marker for band-like look
+        end_position = len(seq) - 1  
+        ax.plot(i, end_position, 's', color='black', markersize=8) 
 
-    # Label and style the plot
     ax.set_xticks(range(len(sequences)))
     ax.set_xticklabels([f'Seq {i+1}' for i in range(len(sequences))], rotation=90)
     ax.set_yticks([])
     ax.set_title("Gel Electrophoresis Representation of Sequences")
 
-    # Display the plot
-    plt.gca().invert_yaxis()  # Invert y-axis to simulate longer sequences appearing lower
+    plt.gca().invert_yaxis()  
     plt.show()
 
 def main()->None:

@@ -83,4 +83,7 @@ int main()
         std::cout << "Done with chunk " << ++chunkNumber << "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++";
         buffer = buffer.substr(buffer.size() - (maxSize - 1));
     }
+
+    out.close();
+    system("python3 PlottingFromFile.py");
 }
