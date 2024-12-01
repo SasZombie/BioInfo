@@ -2,6 +2,7 @@
 #include <string>
 #include <random>
 #include <algorithm>
+#include <fstream>
 #include <tuple>
 #include <vector>
 
@@ -88,18 +89,18 @@ std::vector<std::tuple<size_t, std::string, std::string>> findInversePatterns(co
 {
     std::vector<std::tuple<size_t, std::string, std::string>> patterns;
 
-    size_t sequenceLength = fullSequence.size();
+    const size_t sequenceLength = fullSequence.size();
 
     for (size_t i = 0; i <= sequenceLength - segmentLength; ++i)
     {
-        std::string segment = fullSequence.substr(i, segmentLength);
+        const std::string segment = fullSequence.substr(i, segmentLength);
 
-        std::string mirroredSegment = mirrorSequence(segment);
+        const std::string mirroredSegment = mirrorSequence(segment);
 
         for (size_t j = i + segmentLength; j <= sequenceLength - segmentLength; ++j)
         {
-            std::string middlePart = fullSequence.substr(i + segmentLength, j - (i + segmentLength));
-            std::string potentialMirroredSegment = fullSequence.substr(j, segmentLength);
+            const std::string middlePart = fullSequence.substr(i + segmentLength, j - (i + segmentLength));
+            const std::string potentialMirroredSegment = fullSequence.substr(j, segmentLength);
 
             if (potentialMirroredSegment == mirroredSegment)
             {
@@ -111,7 +112,37 @@ std::vector<std::tuple<size_t, std::string, std::string>> findInversePatterns(co
     return patterns;
 }
 
-int main()
+std::vector<std::tuple<size_t, std::string, std::string>> findInversePattern(const std::string &fullSequence, std::string_view pattern)
+{
+    std::vector<std::tuple<size_t, std::string, std::string>> patterns;
+
+    const size_t sequenceLength = fullSequence.size();
+    const size_t segmentLength = pattern.size();
+
+    for (size_t i = 0; i <= sequenceLength - segmentLength; ++i)
+    {
+        const std::string segment = fullSequence.substr(i, segmentLength);
+        if (segment != pattern)
+            continue;
+
+        const std::string mirroredSegment = mirrorSequence(segment);
+
+        for (size_t j = i + segmentLength; j <= sequenceLength - segmentLength; ++j)
+        {
+            const std::string middlePart = fullSequence.substr(i + segmentLength, j - (i + segmentLength));
+            const std::string potentialMirroredSegment = fullSequence.substr(j, segmentLength);
+
+            if (potentialMirroredSegment == mirroredSegment)
+            {
+                patterns.push_back(std::make_tuple(i, middlePart, potentialMirroredSegment));
+            }
+        }
+    }
+
+    return patterns;
+}
+
+int main(int argc, const char *argv[])
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -128,11 +159,34 @@ int main()
 
     for (const auto &pattern : patterns)
     {
-        size_t idx;
-        std::string middlePart, mirroredSegment;
-        std::tie(idx, middlePart, mirroredSegment) = pattern;
+        auto &[idx, middlePart, mirroredSegment] = pattern;
 
         std::cout << "Pattern starting at index " << idx << ": "
                   << "segment + [" << middlePart << "] + " << mirroredSegment << std::endl;
     }
+
+    std::ofstream out("outMyGenome.txt");
+
+    if (!out.is_open())
+    {
+        std::cerr << "Cannot write file for writing\n";
+        return -1;
+    }
+
+    out << fullSequence;
+    out.close();
 }
+
+// Find on the Internet 5 inverted repeats in order to simulate transposes. Use these inverted repeats  to find transposomes inside a plant genoms,
+// such as zachisa. Make a GUI that allows users
+// to copy-paste the inverted repeats, and that shows a chart with the positions pf these transposomes over the corn genome
+
+// 5'-GAATTC...GAATTC-3'
+
+// 5'-GGATCC...GGATCC-3'
+
+// 5'-AAGCTT...AAGCTT-3'
+
+// 5'-TCTAGA...TCTAGA-3'
+
+// 5'-GCGGCCGC...GCGGCCGC-3'
