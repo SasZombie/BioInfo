@@ -25,5 +25,5 @@ def read_csv_and_plot(file_path):
 
 file_path1 = "newDna.csv"  
 file_path2 = "newDna2.csv"  
-read_csv_and_plot(file_path)
-read_csv_and_plot(file_path)
+read_csv_and_plot(file_path1)
+read_csv_and_plot(file_path2)
