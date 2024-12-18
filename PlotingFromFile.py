@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+import tkinter as tk
 
 def read_file()->list:
     dict_list = []
@@ -100,22 +101,25 @@ def plot_bar()->None:
     plt.tight_layout()  
     plt.show()
 
-def relative_bar_chart()->None:
+def relative_bar_chart(pattern_og=None)->None:
 
-    with open('chromosome14', 'r') as file:
+    with open('outMyGenome.txt', 'r') as file:
         chromosome_data = file.read().replace('\n', '')
     chromosome_length = len(chromosome_data)
 
     number = 0
     pattern_counts = {}
-    with open('out.csv', 'r') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            pattern = row[0].strip()
-            count = int(row[1].strip())
-            if count >= 20:
-                number += 1
-                pattern_counts[pattern] = count
+    if pattern_og is None:
+        with open('myPatterns.csv', 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                pattern = row[0].strip()
+                count = int(row[1].strip())
+                if count >= 20:
+                    number += 1
+                    pattern_counts[pattern] = count
+    else:
+        pattern_counts[pattern_og] = 20
 
     sorted_patterns = sorted(pattern_counts.items(), key=lambda x: x[1], reverse=True)
 
@@ -180,9 +184,34 @@ def read_gel()->None:
 
     plt.gca().invert_yaxis()  
     plt.show()
+    
+def search_genome(input_field: tk.Entry)->None:
+    entry = input_field.get()
+    
+    # result = subprocess.run(
+    #     ["./build/main", entry],
+    #     capture_output=True,
+    #     text=True)
+    relative_bar_chart(entry)
+
+def run_gui()->None:
+    
+    root = tk.Tk()
+
+    label = tk.Label(root, text="Please provide a genome")
+    label.grid(row=0, column=0);
+    
+    input_field = tk.Entry(root, width=20)
+    
+    input_field.grid(row=0, column=1)
+    
+    submit_button = tk.Button(root, text="Go!", command = lambda: search_genome(input_field))
+    submit_button.grid(row=1, column=0)
+    
+    tk.mainloop()
 
 def main()->None:
-    read_gel()
+    run_gui()
 
 
 if __name__ == "__main__":
